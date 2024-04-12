@@ -6,6 +6,10 @@
 #include <vector>
 #include <limits>
 #include <sstream>
+#include <algorithm>
+#include <cctype>
+#include <functional> 
+#include <fstream>
 
 int inpi(const std::string& prompt) {
     std::string input;
@@ -113,4 +117,69 @@ int opt(std::initializer_list<std::string> options) {
     } while (choice == -1);
     
     return choice;
+}
+
+std::string upper(const std::string& input) {
+    std::string output = input;
+    std::transform(output.begin(), output.end(), output.begin(),
+                   [](unsigned char c) { return std::toupper(c); });
+    return output;
+}
+
+std::string lower(const std::string& input) {
+    std::string output = input;
+    std::transform(output.begin(), output.end(), output.begin(),
+                   [](unsigned char c) { return std::tolower(c); });
+    return output;
+}
+
+unsigned long long factorial(int n) {
+    if (n < 0) {
+        std::cerr << "Error! Factorial of a negative number doesn't exist.\n";
+        return 0;
+    }
+    
+    unsigned long long factorial = 1;
+    for(int i = 1; i <= n; ++i) {
+        factorial *= i;
+    }
+    return factorial;
+}
+
+void loopa(int n, const std::function<void()>& func) {
+    for(int i = 0; i < n; ++i) {
+        func();
+    }
+}
+
+
+void loopb(int n, const std::function<void(int)>& func) {
+    for(int i = 0; i < n; ++i) {
+        func(i);
+    }
+}
+
+void createFile(const std::string& path) {
+    std::ofstream ofs(path);
+}
+
+void writeFile(const std::string& path, const std::string& content) {
+    std::ofstream ofs(path, std::ofstream::app);
+    if (ofs.is_open()) {
+        ofs << content;
+        ofs.close();
+    } else {
+        std::cerr << "Unable to open file: " << path << std::endl;
+    }
+}
+
+std::string readFile(const std::string& path) {
+    std::ifstream ifs(path);
+    if (ifs.is_open()) {
+        return std::string((std::istreambuf_iterator<char>(ifs)),
+                            std::istreambuf_iterator<char>());
+    } else {
+        std::cerr << "Unable to open file: " << path << std::endl;
+        return "";
+    }
 }
